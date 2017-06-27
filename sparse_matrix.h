@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Victor Hermann "vitorhnn" Chiletto
+ * Copyright (c) 2017 Victor Hermann "vitorhnn" Chiletto
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -43,16 +43,22 @@ struct sparse_mtx_node *
 sparse_matrix_set_at(
     struct sparse_mtx_node *iterator,
     sparse_matrix *matrix,
-    size_t row,
-    size_t column,
-    double value;
+    const size_t row,
+    const size_t column,
+    const double value;
 );
 
 struct sparse_mtx_node *
-sparse_matrix_set_at(
+sparse_matrix_get_at(
     struct sparse_mtx_node *iterator,
     sparse_matrix *matrix,
-    size_t row,
-    size_t column,
+    const size_t row,
+    const size_t column,
     double *out
+);
+
+sparse_matrix *
+sparse_matrix_new(
+    size_t rows,
+    size_t columns
 );
