@@ -38,6 +38,10 @@ aux_insert_after(
 {
     struct sparse_mtx_node *new_node = malloc(sizeof(struct sparse_mtx_node));
 
+    if (!new_node) {
+        return NULL;
+    }
+
     new_node->value = value;
     new_node->offset = (row * matrix->columns) + column;
 
@@ -72,6 +76,10 @@ aux_insert_before(
 )
 {
     struct sparse_mtx_node *new_node = malloc(sizeof(struct sparse_mtx_node));
+
+    if (!new_node) {
+        return NULL;
+    }
 
     new_node->value = value;
     new_node->offset = (row * matrix->columns) + column;
@@ -244,7 +252,7 @@ sparse_matrix_get_at(
         iterator = aux_create_iterator(matrix, element_pos);
     }
 
-    size_t iterator_pos = iterator ? iterator->offset : 0;
+    size_t iterator_pos = iterator->offset;
 
     if (element_pos < iterator_pos) {
         bool match;
@@ -285,6 +293,10 @@ sparse_matrix_new(
 )
 {
     sparse_matrix *mtx = malloc(sizeof(sparse_matrix));
+
+    if (!mtx) {
+        return NULL;
+    }
 
     mtx->rows = rows;
     mtx->columns = columns;
@@ -343,6 +355,10 @@ sparse_matrix_mul(
     assert(a->columns == b->rows);
 
     sparse_matrix *result = sparse_matrix_new(a->rows, b->columns);
+
+    if (!result) {
+        return NULL;
+    }
 
     struct sparse_mtx_node *ait = NULL,
                            *bit = NULL,
