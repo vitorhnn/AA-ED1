@@ -36,10 +36,16 @@ aux_insert_after(
     double value
 )
 {
+    if (value == 0.0) {
+        // do not insert 0 values.
+        // but also don't return NULL or we invalidate whatever iterator the user might've been using.
+        return node;
+    }
+
     struct sparse_mtx_node *new_node = malloc(sizeof(struct sparse_mtx_node));
 
     if (!new_node) {
-        return NULL;
+        abort();
     }
 
     new_node->value = value;
@@ -75,10 +81,16 @@ aux_insert_before(
     double value
 )
 {
+    if (value == 0.0) {
+        // do not insert 0 values.
+        // but also don't return NULL or we invalidate whatever iterator the user might've been using.
+        return node;
+    }
+
     struct sparse_mtx_node *new_node = malloc(sizeof(struct sparse_mtx_node));
 
     if (!new_node) {
-        return NULL;
+        abort();
     }
 
     new_node->value = value;
@@ -181,11 +193,6 @@ sparse_matrix_set_at(
     const double value
 )
 {
-    // discard null values
-    if (value == 0.0) {
-        return iterator;
-    }
-
     size_t element_pos = (row * matrix->columns) + column;
 
     if (!iterator) {
@@ -295,7 +302,7 @@ sparse_matrix_new(
     sparse_matrix *mtx = malloc(sizeof(sparse_matrix));
 
     if (!mtx) {
-        return NULL;
+        abort();
     }
 
     mtx->rows = rows;
@@ -357,7 +364,7 @@ sparse_matrix_mul(
     sparse_matrix *result = sparse_matrix_new(a->rows, b->columns);
 
     if (!result) {
-        return NULL;
+        abort();
     }
 
     struct sparse_mtx_node *ait = NULL,
