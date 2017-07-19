@@ -70,13 +70,13 @@ sparse_matrix_free(
 
 sparse_matrix *
 sparse_matrix_add(
-    sparse_matrix * restrict a,
-    sparse_matrix * restrict b
+    sparse_matrix *a,
+    sparse_matrix *b
 );
 
 sparse_matrix *
 sparse_matrix_mul(
-    sparse_matrix * restrict a,
-    sparse_matrix * restrict b
+    sparse_matrix *a,
+    sparse_matrix *b
 );
 
