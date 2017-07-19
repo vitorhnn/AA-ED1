@@ -62,3 +62,21 @@ sparse_matrix_new(
     size_t rows,
     size_t columns
 );
+
+void
+sparse_matrix_free(
+    sparse_matrix *matrix
+);
+
+sparse_matrix *
+sparse_matrix_add(
+    sparse_matrix * restrict a,
+    sparse_matrix * restrict b
+);
+
+sparse_matrix *
+sparse_matrix_mul(
+    sparse_matrix * restrict a,
+    sparse_matrix * restrict b
+);
+

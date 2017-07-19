@@ -23,6 +23,7 @@
 #include "sparse_matrix.h"
 
 #include <stdlib.h>
+#include <assert.h>
 
 static unsigned long long __g_linked_list_jumps = 0;
 
@@ -104,7 +105,7 @@ aux_create_iterator(
 {
     size_t mtx_sz = matrix->rows * matrix->columns;
 
-    return bias > mtx_sz / 2 ? matrix->head : matrix->tail;
+    return bias > mtx_sz / 2 ? matrix->tail : matrix->head;
 }
 
 static struct sparse_mtx_node *
@@ -172,6 +173,11 @@ sparse_matrix_set_at(
     const double value
 )
 {
+    // discard null values
+    if (value == 0.0) {
+        return iterator;
+    }
+
     size_t element_pos = (row * matrix->columns) + column;
 
     if (!iterator) {
@@ -288,3 +294,76 @@ sparse_matrix_new(
     return mtx;
 }
 
+void
+smarse_matrix_free(
+    sparse_matrix *matrix
+)
+{
+    struct sparse_mtx_node *node = matrix->head;
+
+    while (node) {
+        struct sparse_mtx_node *next = node->next;
+        free(node);
+        node = next;
+    }
+
+    free(matrix);
+}
+
+sparse_matrix *
+sparse_matrix_add(
+    sparse_matrix * restrict a,
+    sparse_matrix * restrict b
+)
+{
+    assert(a->rows == b->rows);
+    assert(a->columns == b->columns);
+
+    struct sparse_mtx_node *ait = NULL,
+                           *bit = NULL;
+
+    for (size_t i = 0; i < a->rows; ++i) {
+        for (size_t j = 0; j < a->columns; ++j) {
+            double vA, vB;
+            ait = sparse_matrix_get_at(ait, a, i, j, &vA);
+            bit = sparse_matrix_get_at(bit, b, i, j, &vB);
+            ait = sparse_matrix_set_at(ait, a, i, j, vA + vB);
+        }
+    }
+
+    return a;
+}
+
+sparse_matrix *
+sparse_matrix_mul(
+    sparse_matrix * restrict a,
+    sparse_matrix * restrict b
+)
+{
+    assert(a->columns == b->rows);
+
+    sparse_matrix *result = sparse_matrix_new(a->rows, b->columns);
+
+    struct sparse_mtx_node *ait = NULL,
+                           *bit = NULL,
+                           *rit = NULL;
+
+    for (size_t i = 0; i < a->rows; ++i) {
+        for (size_t j = 0; j < b->columns; ++j) {
+            double sum = 0;
+
+            for (size_t k = 0; k < a->columns; ++k) {
+                double vA, vB;
+
+                ait = sparse_matrix_get_at(ait, a, i, k, &vA);
+                bit = sparse_matrix_get_at(bit, b, k, j, &vB);
+
+                sum += vA * vB;
+            }
+
+            rit = sparse_matrix_set_at(rit, result, i, j, sum);
+        }
+    }
+
+    return result;
+}
