@@ -221,7 +221,6 @@ sparse_matrix_set_at(
                 return aux_insert_after(matrix, iterator, row, column, value);
             }
         }
-
     } else if (element_pos > iterator_pos) {
         bool match;
         iterator = forwards_iterate(iterator, element_pos, &match);
@@ -314,7 +313,7 @@ sparse_matrix_new(
 }
 
 void
-smarse_matrix_free(
+sparse_matrix_free(
     sparse_matrix *matrix
 )
 {
